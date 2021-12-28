@@ -2,11 +2,17 @@
 
 set -eo pipefail
 
+### playing ###
+DATE=$(date "+%D %T")
+mkdir -p /tmp/src/static
+echo "BUILD DATE:$DATE <br/>BUILT ON:" > /tmp/src/static/info.html
+/usr/bin/env httpd -v >> /tmp/src/static/info.html
+python --version >> /tmp/src/static/info.html
+###
+
 # If a wheelhouse cache directory exists, the repository is being used as
 # input to a wheelhouse build, to build Python wheels for required packages.
 # In this case fall through to executing the original 'assemble' script.
-
-
 
 if [ -d /opt/app-root/wheelhouse ]; then
     exec /opt/app-root/s2i/assemble
@@ -20,9 +26,3 @@ pip install powershift-cli[image]
 
 exec powershift image assemble
 
-### playing ###
-DATE=$(date "+%D %T")
-echo "BUILD DATE:$DATE <br/>BUILT ON:" > /opt/app-root/src/static/info.html
-/usr/bin/env httpd -v >> /opt/app-root/src/static/info.html
-python --version >> /opt/app-root/src/static/info.html
-###
